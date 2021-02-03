@@ -1,5 +1,6 @@
 {{ $global := . }}
 {{- range $k, $job := .Values.jobs }}
+{{ if $job.enabled }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -93,4 +94,5 @@ spec:
             {{- toYaml $global.Values.resources | nindent 12 }}
 
   backoffLimit: 100
+{{- end }}
 {{- end }}

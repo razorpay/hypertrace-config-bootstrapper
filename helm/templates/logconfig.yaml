@@ -1,5 +1,6 @@
 {{ $global := . }}
 {{- range $k, $job := .Values.jobs }}
+{{ if $job.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -40,3 +41,5 @@ data:
     rootLogger.appenderRef.rolling.ref = ROLLING_FILE
     {{- end }}
 {{- end }}
+{{- end }}
+

@@ -1,4 +1,4 @@
-{{ if .Values.jobs.default }}
+{{ if .Values.jobs.default.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

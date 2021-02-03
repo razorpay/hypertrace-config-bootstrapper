@@ -63,6 +63,7 @@ configBootstrapperConfig:
 jobs:
   default:
     prefix: default
+    enabled: true
     configurationCommands: {}
 
 entityServiceConfig:

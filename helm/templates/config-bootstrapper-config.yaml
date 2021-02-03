@@ -1,45 +1,49 @@
+{{ $global := . }}
+{{- range $k, $job := .Values.jobs }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.job.prefix }}-{{ .Values.configBootstrapperConfig.name }}
+  name: {{ $job.prefix }}-{{ $global.Values.configBootstrapperConfig.name }}
   labels:
-    release: {{ .Release.Name }}
+    release: {{ $global.Release.Name }}
 data:
   application.conf: |-
     attributes.service.config = {
-        host={{ .Values.attributeServiceConfig.data.host }}
-        port={{ .Values.attributeServiceConfig.data.port }}
+        host={{ $global.Values.attributeServiceConfig.data.host }}
+        port={{ $global.Values.attributeServiceConfig.data.port }}
     }
     entity.service.config = {
-        host={{ .Values.entityServiceConfig.data.host }}
-        port={{ .Values.entityServiceConfig.data.port }}
+        host={{ $global.Values.entityServiceConfig.data.host }}
+        port={{ $global.Values.entityServiceConfig.data.port }}
     }
-    dataStoreType = {{ .Values.dataStoreType }}
-    {{- if eq .Values.dataStoreType "mongo" }}
+    dataStoreType = {{ $global.Values.dataStoreType }}
+    {{- if eq $global.Values.dataStoreType "mongo" }}
     mongo = {
-          {{- if .Values.mongoConfig.data.url }}
-          url = {{ .Values.mongoConfig.data.url | quote }}
+          {{- if $global.Values.mongoConfig.data.url }}
+          url = {{ $global.Values.mongoConfig.data.url | quote }}
           {{- else }}
-          host={{ .Values.mongoConfig.data.host }}
-          port={{ .Values.mongoConfig.data.port }}
+          host={{ $global.Values.mongoConfig.data.host }}
+          port={{ $global.Values.mongoConfig.data.port }}
           {{- end }}
         }
-    {{ else if eq .Values.dataStoreType "postgres" }}
+    {{ else if eq $global.Values.dataStoreType "postgres" }}
     postgres = {
-          {{- if .Values.postgresConfig.data.url }}
-          url={{ .Values.postgresConfig.data.url | quote }}
+          {{- if $global.Values.postgresConfig.data.url }}
+          url={{ $global.Values.postgresConfig.data.url | quote }}
           {{- else }}
-          host={{ .Values.postgresConfig.data.host }}
-          port={{ .Values.postgresConfig.data.port }}
+          host={{ $global.Values.postgresConfig.data.host }}
+          port={{ $global.Values.postgresConfig.data.port }}
           {{- end }}
-          {{- if .Values.postgresConfig.data.database }}
-          database= {{ .Values.postgresConfig.data.database }}
+          {{- if $global.Values.postgresConfig.data.database }}
+          database= {{ $global.Values.postgresConfig.data.database }}
           {{- end }}
-          {{- if .Values.postgresConfig.data.user }}
-          user={{ .Values.postgresConfig.data.user }}
+          {{- if $global.Values.postgresConfig.data.user }}
+          user={{ $global.Values.postgresConfig.data.user }}
           {{- end }}
-          {{- if .Values.postgresConfig.data.password }}
-          password={{ .Values.postgresConfig.data.password }}
+          {{- if $global.Values.postgresConfig.data.password }}
+          password={{ $global.Values.postgresConfig.data.password }}
           {{- end }}
         }
     {{- end }}
+{{- end }}

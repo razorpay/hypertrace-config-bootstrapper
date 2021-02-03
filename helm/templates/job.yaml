@@ -1,10 +1,13 @@
+{{ $global := . }}
+{{- range $k, $job := .Values.jobs }}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Values.job.prefix }}-{{ .Chart.Name }}
+  name: {{ $job.prefix }}-{{ $global.Chart.Name }}
   labels:
-    release: {{ .Release.Name }}
-  {{- with .Values.jobLabels }}
+    release: {{ $global.Release.Name }}
+  {{- with $global.Values.jobLabels }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
   annotations:
@@ -18,75 +21,76 @@ spec:
   template:
     metadata:
       labels:
-        release: {{ .Release.Name }}
-      {{- with .Values.podLabels }}
+        release: {{ $global.Release.Name }}
+      {{- with $global.Values.podLabels }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
       restartPolicy: OnFailure
-    {{- with .Values.imagePullSecrets }}
+    {{- with $global.Values.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
         - name: job-config
           configMap:
-            name: {{ .Values.job.prefix }}-{{ .Values.configBootstrapperConfig.name }}
+            name: {{ $job.prefix }}-{{ $global.Values.configBootstrapperConfig.name }}
         - name: log4j-config
           configMap:
-            name: {{ .Values.job.prefix }}-{{ .Values.logConfig.name }}
-        {{- if .Values.configurationCommands }}
+            name: {{ $job.prefix }}-{{ $global.Values.logConfig.name }}
+        {{- if $global.Values.configurationCommands }}
         - name: bootstrap-configs
           configMap:
-            name: {{ .Values.job.prefix }}-bootstrap-configs
+            name: {{ $job.prefix }}-bootstrap-configs
         {{- end }}
-    {{- with .Values.nodeLabels }}
+    {{- with $global.Values.nodeLabels }}
       nodeSelector:
       {{- toYaml . | nindent 8}}
     {{- end }}
       initContainers:
-        {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "attribute") }}
+        {{- if or (eq $job.prefix "default") (eq $job.prefix "attribute") }}
         - name: attribute-service-ready
           image: busybox
           imagePullPolicy: IfNotPresent
           command: ["sh", "-c"]
-          args: ["until nc -zv {{ .Values.attributeServiceConfig.data.host }} {{ .Values.attributeServiceConfig.data.port }}; \
-                  do echo 'waiting for {{ .Values.attributeServiceConfig.data.host }} {{ .Values.attributeServiceConfig.data.port }}'; \
+          args: ["until nc -zv {{ $global.Values.attributeServiceConfig.data.host }} {{ $global.Values.attributeServiceConfig.data.port }}; \
+                  do echo 'waiting for {{ $global.Values.attributeServiceConfig.data.host }} {{ $global.Values.attributeServiceConfig.data.port }}'; \
                   sleep 5; done"]
         {{- end }}
-        {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "entity") }}
+        {{- if or (eq $job.prefix "default") (eq $job.prefix "entity") }}
         - name: entity-service-ready
           image: busybox
           imagePullPolicy: IfNotPresent
           command: ["sh", "-c"]
-          args: ["until nc -zv {{ .Values.entityServiceConfig.data.host }} {{ .Values.entityServiceConfig.data.port }}; \
-                  do echo 'waiting for {{ .Values.entityServiceConfig.data.host }} {{ .Values.entityServiceConfig.data.port }}'; \
+          args: ["until nc -zv {{ $global.Values.entityServiceConfig.data.host }} {{ $global.Values.entityServiceConfig.data.port }}; \
+                  do echo 'waiting for {{ $global.Values.entityServiceConfig.data.host }} {{ $global.Values.entityServiceConfig.data.port }}'; \
                   sleep 5; done"]
         {{- end }}
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          args: [ "-c", "/etc/config-bootstrapper/application.conf", "-C", "/app/resources/configs/config-bootstrapper/{{ .Values.job.prefix }}-service", "--upgrade" ]
+        - name: {{ $global.Chart.Name }}
+          image: "{{ $global.Values.image.repository }}:{{ $global.Chart.AppVersion }}"
+          imagePullPolicy: {{ $global.Values.image.pullPolicy }}
+          args: [ "-c", "/etc/config-bootstrapper/application.conf", "-C", "/app/resources/configs/config-bootstrapper/{{ $job.prefix }}-service", "--upgrade" ]
           env:
             - name: SERVICE_NAME
-              value: "{{ .Chart.Name }}"
+              value: "{{ $global.Chart.Name }}"
             - name: LOG4J_CONFIGURATION_FILE
-              value: "/var/{{ .Chart.Name }}/log/log4j2.properties"
+              value: "/var/{{ $global.Chart.Name }}/log/log4j2.properties"
             - name: JAVA_TOOL_OPTIONS
-              value: {{ .Values.javaOpts | quote }}
+              value: {{ $global.Values.javaOpts | quote }}
           volumeMounts:
             - name: job-config
               mountPath: /etc/config-bootstrapper/application.conf
               subPath: application.conf
             - name: log4j-config
-              mountPath: /var/{{ .Chart.Name }}/log
-            {{- range $key, $value := .Values.configurationCommands }}
+              mountPath: /var/{{ $global.Chart.Name }}/log
+            {{- range $key, $value := $job.configurationCommands }}
             - name: bootstrap-configs
-              mountPath: /app/resources/configs/config-bootstrapper/{{ $.Values.job.prefix }}-service/extras/{{ $key }}
+              mountPath: /app/resources/configs/config-bootstrapper/{{ $job.prefix }}-service/extras/{{ $key }}
               subPath: {{ $key }}
             {{- end }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml $global.Values.resources | nindent 12 }}
 
   backoffLimit: 100
+{{- end }}

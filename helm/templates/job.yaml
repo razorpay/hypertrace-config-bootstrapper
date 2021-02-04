@@ -45,7 +45,7 @@ spec:
       {{- toYaml . | nindent 8}}
     {{- end }}
       initContainers:
-        {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "attribute") }}
+        {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "attribute") (eq .Values.job.prefix "all") }}
         - name: attribute-service-ready
           image: busybox
           imagePullPolicy: IfNotPresent
@@ -54,7 +54,7 @@ spec:
                   do echo 'waiting for {{ .Values.attributeServiceConfig.data.host }} {{ .Values.attributeServiceConfig.data.port }}'; \
                   sleep 5; done"]
         {{- end }}
-        {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "entity") }}
+        {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "entity") (eq .Values.job.prefix "all") }}
         - name: entity-service-ready
           image: busybox
           imagePullPolicy: IfNotPresent
@@ -67,7 +67,11 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if (eq .Values.job.prefix "all") }}
+          args: [ "-c", "/etc/config-bootstrapper/application.conf", "-C", "/app/resources/configs/config-bootstrapper", "--upgrade" ]
+        {{- else }}
           args: [ "-c", "/etc/config-bootstrapper/application.conf", "-C", "/app/resources/configs/config-bootstrapper/{{ .Values.job.prefix }}-service", "--upgrade" ]
+        {{- end }}
           env:
             - name: SERVICE_NAME
               value: "{{ .Chart.Name }}"

@@ -4,6 +4,8 @@ metadata:
   name: {{ .Values.job.prefix }}-{{ .Values.configBootstrapperConfig.name }}
   labels:
     release: {{ .Release.Name }}
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
 data:
   application.conf: |-
     attributes.service.config = {

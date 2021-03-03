@@ -5,8 +5,6 @@ metadata:
   name:  default-bootstrap-configs
   labels:
     release: {{ .Release.Name }}
-  annotations:
-    "helm.sh/hook": post-install, post-upgrade
 data:
 {{- range $path, $bytes := .Files.Glob "configs/**" }}
 {{- $name := base ($path) }}

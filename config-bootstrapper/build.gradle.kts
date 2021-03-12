@@ -36,7 +36,7 @@ tasks.register<com.bmuschko.gradle.docker.tasks.network.DockerRemoveNetwork>("re
 }
 
 tasks.register<DockerPullImage>("pullMongoImage") {
-  image.set("mongo:4.2.6")
+  image.set("mongo:4.4.0")
 }
 
 tasks.register<DockerCreateContainer>("createMongoContainer") {
@@ -45,7 +45,7 @@ tasks.register<DockerCreateContainer>("createMongoContainer") {
   targetImageId(tasks.getByName<DockerPullImage>("pullMongoImage").image)
   containerName.set("mongo-local")
   hostConfig.network.set(tasks.getByName<DockerCreateNetwork>("createIntegrationTestNetwork").networkId)
-  hostConfig.portBindings.set(listOf("27017:27017"))
+  hostConfig.portBindings.set(listOf("37017:27017"))
   hostConfig.autoRemove.set(true)
 }
 
@@ -60,7 +60,7 @@ tasks.register<DockerStopContainer>("stopMongoContainer") {
 }
 
 tasks.register<DockerPullImage>("pullAttributeServiceImage") {
-  image.set("hypertrace/attribute-service:0.1.9")
+  image.set("hypertrace/attribute-service:0.10.2")
 }
 
 tasks.register<DockerCreateContainer>("createAttributeServiceContainer") {
@@ -68,10 +68,10 @@ tasks.register<DockerCreateContainer>("createAttributeServiceContainer") {
   targetImageId(tasks.getByName<DockerPullImage>("pullAttributeServiceImage").image)
   containerName.set("attribute-service-local")
   envVars.put("SERVICE_NAME", "attribute-service")
-  envVars.put("mongo_host", tasks.getByName<DockerCreateContainer>("createMongoContainer").containerName)
+  envVars.put("MONGO_HOST", tasks.getByName<DockerCreateContainer>("createMongoContainer").containerName)
   exposePorts("tcp", listOf(9012))
-  hostConfig.network.set(tasks.getByName<DockerCreateNetwork>("createIntegrationTestNetwork").networkId)
   hostConfig.portBindings.set(listOf("9012:9012"))
+  hostConfig.network.set(tasks.getByName<DockerCreateNetwork>("createIntegrationTestNetwork").networkId)
   hostConfig.autoRemove.set(true)
 }
 
@@ -87,7 +87,7 @@ tasks.register<DockerStopContainer>("stopAttributeServiceContainer") {
 }
 
 tasks.register<DockerPullImage>("pullEntityServiceImage") {
-  image.set("hypertrace/entity-service:0.1.26")
+  image.set("hypertrace/entity-service:0.5.12")
 }
 
 tasks.register<DockerCreateContainer>("createEntityServiceContainer") {
@@ -95,12 +95,9 @@ tasks.register<DockerCreateContainer>("createEntityServiceContainer") {
   targetImageId(tasks.getByName<DockerPullImage>("pullEntityServiceImage").image)
   containerName.set("entity-service-local")
   envVars.put("SERVICE_NAME", "entity-service")
-  envVars.put("mongo_host", tasks.getByName<DockerCreateContainer>("createMongoContainer").containerName)
-  envVars.put("BOOTSTRAP_CONFIG_URI", "file:///app/resources/configs")
-  envVars.put("CLUSTER_NAME", "test")
+  envVars.put("MONGO_HOST", tasks.getByName<DockerCreateContainer>("createMongoContainer").containerName)
   exposePorts("tcp", listOf(50061))
   hostConfig.portBindings.set(listOf("50061:50061"))
-  hostConfig.binds.put("${projectDir}/src/integrationTest/resources/config-entity-service-test/application.conf", "/app/resources/configs/entity-service/test/application.conf")
   hostConfig.network.set(tasks.getByName<DockerCreateNetwork>("createIntegrationTestNetwork").networkId)
   hostConfig.autoRemove.set(true)
 }
@@ -129,12 +126,12 @@ tasks.test {
 }
 
 dependencies {
-  implementation("org.hypertrace.entity.service:entity-service-client:0.4.1")
-  implementation("org.hypertrace.entity.service:entity-service-api:0.4.1")
-  implementation("org.hypertrace.core.documentstore:document-store:0.5.3")
-  implementation("org.hypertrace.core.attribute.service:attribute-service-client:0.8.2")
-  implementation("org.hypertrace.core.grpcutils:grpc-context-utils:0.3.1")
-  implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.3.1")
+  implementation("org.hypertrace.entity.service:entity-service-client:0.5.12")
+  implementation("org.hypertrace.entity.service:entity-service-api:0.5.12")
+  implementation("org.hypertrace.core.documentstore:document-store:0.5.4")
+  implementation("org.hypertrace.core.attribute.service:attribute-service-client:0.10.2")
+  implementation("org.hypertrace.core.grpcutils:grpc-context-utils:0.3.4")
+  implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.3.4")
 
   implementation("org.slf4j:slf4j-api:1.7.30")
   implementation("org.apache.logging.log4j:log4j-api:2.13.3")
@@ -150,8 +147,9 @@ dependencies {
   implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
 
-  runtimeOnly("io.grpc:grpc-netty:1.33.0")
-  runtimeOnly("io.netty:netty-handler-proxy:4.1.59.Final")
+  runtimeOnly("io.grpc:grpc-netty:1.36.0")
+  runtimeOnly("io.netty:netty-handler-proxy:4.1.60.Final")
+
   constraints {
     implementation("com.google.guava:guava:30.0-jre") {
       because("Information Disclosure [Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415] in com.google.guava:guava@29.0-android")
@@ -159,11 +157,14 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15") {
       because("https://snyk.io/vuln/SNYK-JAVA-COMMONSCODEC-561518")
     }
+    runtimeOnly("io.netty:netty-codec-http2:4.1.60.Final") {
+      because("https://snyk.io/vuln/SNYK-JAVA-IONETTY-1083991")
+    }
   }
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
   testImplementation("org.mockito:mockito-core:3.3.3")
 
-  integrationTestImplementation("org.hypertrace.core.serviceframework:integrationtest-service-framework:0.1.19")
+  integrationTestImplementation("org.hypertrace.core.serviceframework:integrationtest-service-framework:0.1.21")
   integrationTestImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
 }

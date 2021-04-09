@@ -147,8 +147,8 @@ dependencies {
   implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
 
-  runtimeOnly("io.grpc:grpc-netty:1.36.0")
-  runtimeOnly("io.netty:netty-handler-proxy:4.1.60.Final")
+  runtimeOnly("io.grpc:grpc-netty:1.37.0")
+  runtimeOnly("io.netty:netty-handler-proxy:4.1.61.Final")
 
   constraints {
     implementation("com.google.guava:guava:30.0-jre") {
@@ -157,7 +157,7 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15") {
       because("https://snyk.io/vuln/SNYK-JAVA-COMMONSCODEC-561518")
     }
-    runtimeOnly("io.netty:netty-codec-http2:4.1.60.Final") {
+    runtimeOnly("io.netty:netty-codec-http2:4.1.61.Final") {
       because("https://snyk.io/vuln/SNYK-JAVA-IONETTY-1083991")
     }
   }

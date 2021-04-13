@@ -15,7 +15,7 @@ plugins {
 }
 
 application {
-  mainClassName = "org.hypertrace.core.bootstrapper.ConfigBootstrapper"
+  mainClass.set("org.hypertrace.core.bootstrapper.ConfigBootstrapper")
 }
 
 hypertraceDocker {
@@ -60,7 +60,7 @@ tasks.register<DockerStopContainer>("stopMongoContainer") {
 }
 
 tasks.register<DockerPullImage>("pullAttributeServiceImage") {
-  image.set("hypertrace/attribute-service:0.10.2")
+  image.set("hypertrace/attribute-service:0.11.0")
 }
 
 tasks.register<DockerCreateContainer>("createAttributeServiceContainer") {
@@ -87,7 +87,7 @@ tasks.register<DockerStopContainer>("stopAttributeServiceContainer") {
 }
 
 tasks.register<DockerPullImage>("pullEntityServiceImage") {
-  image.set("hypertrace/entity-service:0.5.12")
+  image.set("hypertrace/entity-service:0.6.0")
 }
 
 tasks.register<DockerCreateContainer>("createEntityServiceContainer") {
@@ -126,45 +126,43 @@ tasks.test {
 }
 
 dependencies {
-  implementation("org.hypertrace.entity.service:entity-service-client:0.5.12")
-  implementation("org.hypertrace.entity.service:entity-service-api:0.5.12")
+  implementation("org.hypertrace.entity.service:entity-service-client:0.6.0")
+  implementation("org.hypertrace.entity.service:entity-service-api:0.6.0")
   implementation("org.hypertrace.core.documentstore:document-store:0.5.4")
-  implementation("org.hypertrace.core.attribute.service:attribute-service-client:0.10.2")
-  implementation("org.hypertrace.core.grpcutils:grpc-context-utils:0.3.4")
-  implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.3.4")
+  implementation("org.hypertrace.core.attribute.service:attribute-service-client:0.11.0")
+  implementation("org.hypertrace.core.grpcutils:grpc-context-utils:0.4.0")
+  implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.4.0")
 
   implementation("org.slf4j:slf4j-api:1.7.30")
-  implementation("org.apache.logging.log4j:log4j-api:2.13.3")
-  implementation("org.apache.logging.log4j:log4j-core:2.13.3")
-  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.13.3")
+  implementation("org.apache.logging.log4j:log4j-api:2.14.1")
+  implementation("org.apache.logging.log4j:log4j-core:2.14.1")
+  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.14.1")
   implementation("org.apache.httpcomponents:httpclient:4.5.13")
-  implementation("commons-io:commons-io:2.6")
-  implementation("com.typesafe:config:1.4.0")
-  implementation("com.google.protobuf:protobuf-java:3.13.0")
-  implementation("com.google.protobuf:protobuf-java-util:3.13.0")
+  implementation("commons-io:commons-io:2.8.0")
+  implementation("com.typesafe:config:1.4.1")
+  implementation("com.google.protobuf:protobuf-java:3.15.8")
+  implementation("com.google.protobuf:protobuf-java-util:3.15.8")
   implementation("commons-cli:commons-cli:1.4")
   implementation("org.reflections:reflections:0.9.12")
-  implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
-  implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
+  implementation("com.fasterxml.jackson.core:jackson-core:2.12.2")
+  implementation("com.fasterxml.jackson.core:jackson-databind:2.12.2")
 
   runtimeOnly("io.grpc:grpc-netty:1.37.0")
-  runtimeOnly("io.netty:netty-handler-proxy:4.1.61.Final")
 
   constraints {
-    implementation("com.google.guava:guava:30.0-jre") {
-      because("Information Disclosure [Medium Severity][https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415] in com.google.guava:guava@29.0-android")
-    }
     implementation("commons-codec:commons-codec:1.15") {
       because("https://snyk.io/vuln/SNYK-JAVA-COMMONSCODEC-561518")
     }
     runtimeOnly("io.netty:netty-codec-http2:4.1.61.Final") {
+    }
+    runtimeOnly("io.netty:netty-handler-proxy:4.1.61.Final") {
       because("https://snyk.io/vuln/SNYK-JAVA-IONETTY-1083991")
     }
   }
 
-  testImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
-  testImplementation("org.mockito:mockito-core:3.3.3")
+  testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+  testImplementation("org.mockito:mockito-core:3.9.0")
 
   integrationTestImplementation("org.hypertrace.core.serviceframework:integrationtest-service-framework:0.1.21")
-  integrationTestImplementation("org.junit.jupiter:junit-jupiter:5.6.2")
+  integrationTestImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 }

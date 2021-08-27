@@ -10,5 +10,5 @@ plugins {
   id("org.hypertrace.version-settings") version "0.2.0"
 }
 
-rootProject.name = "config-bootstrapper"
+rootProject.name = "config-bootstrapper-root"
 include(":config-bootstrapper")

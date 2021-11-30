@@ -130,8 +130,8 @@ dependencies {
   implementation("org.hypertrace.entity.service:entity-service-api:0.6.4")
   implementation("org.hypertrace.core.documentstore:document-store:0.5.4")
   implementation("org.hypertrace.core.attribute.service:attribute-service-client:0.12.0")
-  implementation("org.hypertrace.core.grpcutils:grpc-context-utils:0.4.0")
-  implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.4.0")
+  implementation("org.hypertrace.core.grpcutils:grpc-context-utils:0.6.2")
+  implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.6.2")
 
   implementation("org.slf4j:slf4j-api:1.7.30")
   implementation("org.apache.logging.log4j:log4j-api:2.14.1")
@@ -140,29 +140,26 @@ dependencies {
   implementation("org.apache.httpcomponents:httpclient:4.5.13")
   implementation("commons-io:commons-io:2.8.0")
   implementation("com.typesafe:config:1.4.1")
-  implementation("com.google.protobuf:protobuf-java:3.15.8")
-  implementation("com.google.protobuf:protobuf-java-util:3.15.8")
+  implementation("com.google.protobuf:protobuf-java:3.19.1")
+  implementation("com.google.protobuf:protobuf-java-util:3.19.1")
   implementation("commons-cli:commons-cli:1.4")
   implementation("org.reflections:reflections:0.9.12")
   implementation("com.fasterxml.jackson.core:jackson-core:2.12.2")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.12.2")
 
-  runtimeOnly("io.grpc:grpc-netty:1.37.0")
+  runtimeOnly("io.grpc:grpc-netty:1.42.0")
 
   constraints {
     implementation("commons-codec:commons-codec:1.15") {
       because("https://snyk.io/vuln/SNYK-JAVA-COMMONSCODEC-561518")
     }
-    runtimeOnly("io.netty:netty-codec-http2:4.1.68.Final") {
-    }
-    runtimeOnly("io.netty:netty-handler-proxy:4.1.68.Final") {
-      because("https://snyk.io/vuln/SNYK-JAVA-IONETTY-1083991")
-    }
+    runtimeOnly("io.netty:netty-codec-http2:4.1.68.Final")
+    runtimeOnly("io.netty:netty-handler-proxy:4.1.68.Final")
   }
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
   testImplementation("org.mockito:mockito-core:3.9.0")
 
-  integrationTestImplementation("org.hypertrace.core.serviceframework:integrationtest-service-framework:0.1.21")
+  integrationTestImplementation("org.hypertrace.core.serviceframework:integrationtest-service-framework:0.1.31")
   integrationTestImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 }

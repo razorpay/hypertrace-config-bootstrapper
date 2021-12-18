@@ -134,9 +134,9 @@ dependencies {
   implementation("org.hypertrace.core.grpcutils:grpc-client-utils:0.6.2")
 
   implementation("org.slf4j:slf4j-api:1.7.30")
-  implementation("org.apache.logging.log4j:log4j-api:2.15.0")
-  implementation("org.apache.logging.log4j:log4j-core:2.15.0")
-  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.15.0")
+  implementation("org.apache.logging.log4j:log4j-api:2.17.0")
+  implementation("org.apache.logging.log4j:log4j-core:2.17.0")
+  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.0")
   implementation("org.apache.httpcomponents:httpclient:4.5.13")
   implementation("commons-io:commons-io:2.8.0")
   implementation("com.typesafe:config:1.4.1")
@@ -153,8 +153,8 @@ dependencies {
     implementation("commons-codec:commons-codec:1.15") {
       because("https://snyk.io/vuln/SNYK-JAVA-COMMONSCODEC-561518")
     }
-    runtimeOnly("io.netty:netty-codec-http2:4.1.68.Final")
-    runtimeOnly("io.netty:netty-handler-proxy:4.1.68.Final")
+    runtimeOnly("io.netty:netty-codec-http2:4.1.71.Final")
+    runtimeOnly("io.netty:netty-handler-proxy:4.1.71.Final")
   }
 
   testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")

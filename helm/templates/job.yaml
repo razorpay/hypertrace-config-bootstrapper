@@ -53,6 +53,10 @@ spec:
           args: ["until nc -zv {{ .Values.attributeServiceConfig.data.host }} {{ .Values.attributeServiceConfig.data.port }}; \
                   do echo 'waiting for {{ .Values.attributeServiceConfig.data.host }} {{ .Values.attributeServiceConfig.data.port }}'; \
                   sleep 5; done"]
+          {{- with .Values.waitContainers.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- end }}
         {{- if or (eq .Values.job.prefix "default") (eq .Values.job.prefix "entity") (eq .Values.job.prefix "all") }}
         - name: entity-service-ready
@@ -62,6 +66,10 @@ spec:
           args: ["until nc -zv {{ .Values.entityServiceConfig.data.host }} {{ .Values.entityServiceConfig.data.port }}; \
                   do echo 'waiting for {{ .Values.entityServiceConfig.data.host }} {{ .Values.entityServiceConfig.data.port }}'; \
                   sleep 5; done"]
+          {{- with .Values.waitContainers.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
         {{- end }}
       containers:
         - name: {{ .Chart.Name }}

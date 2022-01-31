@@ -99,3 +99,6 @@ logConfig:
   appender:
     rolling:
       enabled: false
+
+waitContainers:
+  securityContext: {}

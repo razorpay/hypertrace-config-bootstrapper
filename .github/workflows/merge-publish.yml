@@ -2,7 +2,7 @@ name: merge-publish
 on:
   push:
     branches:
-      - main
+      - rzp_main
   workflow_dispatch:
 
 jobs:

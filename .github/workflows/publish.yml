@@ -31,8 +31,8 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_READ_USER }}
-          password: ${{ secrets.DOCKERHUB_READ_TOKEN }}
+          username: ${{ secrets.PUBLIC_DOCKER_USERNAME }}
+          password: ${{ secrets.PUBLIC_DOCKER_PASSWORD }}
 
       - name: publish docker image
         uses: hypertrace/github-actions/gradle@main
@@ -41,6 +41,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.PUBLIC_DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.PUBLIC_DOCKER_PASSWORD }}
+          IMAGE_TAG: ${{ github.sha }}
 
   publish-helm-charts:
     needs: publish-artifacts

@@ -36,6 +36,17 @@ jobs:
         uses: hypertrace/github-actions/gradle@main
         with: 
           args: build dockerBuildImages
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+
+      - name: push docker image
+        uses: hypertrace/github-actions/gradle@main
+        with:
+          args: dockerPushImages
+        env:
+          DOCKER_USERNAME: ${{ secrets.PUBLIC_DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.PUBLIC_DOCKER_PASSWORD }}
+          IMAGE_TAG: ${{ github.sha }}
 
   validate-helm-charts:
     runs-on: ubuntu-20.04

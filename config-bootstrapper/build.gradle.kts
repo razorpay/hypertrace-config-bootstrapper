@@ -20,7 +20,7 @@ application {
 
 hypertraceDocker {
   defaultImage {
-    imageName.set("hypertrace-config-bootstrapper")
+    imageName.set("hypertrace-service")
     javaApplication {
       serviceName.set("${project.name}")
       adminPort.set(8099)

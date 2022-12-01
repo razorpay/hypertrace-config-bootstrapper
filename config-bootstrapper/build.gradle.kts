@@ -20,10 +20,14 @@ application {
 
 hypertraceDocker {
   defaultImage {
+    imageName.set("hypertrace-service")
     javaApplication {
       serviceName.set("${project.name}")
+      adminPort.set(8099)
     }
+    namespace.set("razorpay")
   }
+  tag("${project.name}" + "_" + System.getenv("IMAGE_TAG"))
 }
 
 tasks.register<DockerCreateNetwork>("createIntegrationTestNetwork") {

